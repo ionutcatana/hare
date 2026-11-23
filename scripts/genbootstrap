@@ -3,13 +3,16 @@
 cd "$(dirname "$0")/.."
 mkdir -p "${BINOUT:-.bin}" makefiles/
 "${HARE:-hare}" build -o "${BINOUT:-.bin}"/genbootstrap cmd/genbootstrap
-for platform in linux freebsd dragonfly openbsd netbsd; do
+for platform in linux freebsd dragonfly openbsd netbsd darwin; do
 	platformtags=
 	if [ $platform = "openbsd" ]; then
 		platformtags=libc
 	fi
 	for arch in x86_64 aarch64 riscv64; do
 		if [ $platform = "dragonfly" -a $arch != "x86_64" ]; then
+			continue
+		fi
+		if [ $platform = "darwin" -a $arch = "riscv64" ]; then
 			continue
 		fi
 		echo makefiles/$platform.$arch.mk
